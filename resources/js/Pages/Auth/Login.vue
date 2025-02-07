@@ -7,6 +7,9 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {useLoginStore} from '@/stores/login';
+
+const loginStore = useLoginStore();
 
 defineProps({
     canResetPassword: Boolean,
@@ -19,7 +22,16 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
+const submit = async () => {
+
+    await loginStore.fetchToken(
+       {
+        email: form.email,
+        password: form.password,
+   
+       }
+    );
+
     form.transform(data => ({
         ...data,
         remember: form.remember ? 'on' : '',

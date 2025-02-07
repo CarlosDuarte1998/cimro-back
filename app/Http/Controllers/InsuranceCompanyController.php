@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InsuranceCompany;
 use Illuminate\Http\Request;
 use App\Services\ImageValidationService;
+use Illuminate\Support\Facades\Auth;
 
 
 class InsuranceCompanyController extends Controller
@@ -14,6 +15,21 @@ class InsuranceCompanyController extends Controller
     public function index()
     {
         $insuranceCompanies = InsuranceCompany::all();
+        $insuranceCompanies = InsuranceCompany::with('user')->get();
+
+        $insuranceCompanies = $insuranceCompanies->map(function ($insuranceCompany) {
+            return [
+                'id' => $insuranceCompany->id,
+                'name' => $insuranceCompany->name,
+                'image' => $insuranceCompany->image,
+                'user' => [
+                    'id' => $insuranceCompany->user->id,
+                    'name' => $insuranceCompany->user->name,
+                    'email' => $insuranceCompany->user->email,
+                ],
+            ];
+        });
+
         return response()->json($insuranceCompanies);
     }
 
@@ -33,7 +49,7 @@ class InsuranceCompanyController extends Controller
 
         $insuranceCompany->name = $request->name;
         $insuranceCompany->image = $imagePath;
-        $insuranceCompany->user_id = 1;
+        $insuranceCompany->user_id = Auth::id();
         $insuranceCompany->save();
 
 

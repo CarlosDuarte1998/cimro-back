@@ -9,7 +9,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
-
+import { createPinia } from 'pinia';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -18,21 +18,19 @@ createInertiaApp({
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
+            .use(plugin)
             .use(PrimeVue, {
                 unstyled: false,
                 theme: {
                     preset: Aura,
                     options: {
-                    
-                        
                         darkModeSelector: false || "none",
-                       
                     },
                 },
             })
             .use(ConfirmationService)
             .use(ToastService)
-            .use(plugin)
+            .use(createPinia())
             .use(ZiggyVue)
             .mount(el);
     },

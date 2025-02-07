@@ -23,6 +23,7 @@ const switchToTeam = (team) => {
 };
 
 const logout = () => {
+    localStorage.removeItem('auth_token');
     router.post(route('logout'));
 };
 </script>
