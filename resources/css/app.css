@@ -5,3 +5,19 @@
 [x-cloak] {
     display: none;
 }
+
+
+/* [data-pc-name="pcacceptbutton"] {
+    background-color: black;
+    color: white;
+    padding: 7px   10.5px;
+    font-size: 1rem;
+}
+
+[data-pc-name="pcrejectbutton"] {
+    background-color: white;
+    color: black;
+    padding: 7px   10.5px;
+    border: 1px solid #e2e8f0;
+    font-size: 1rem;
+} */
