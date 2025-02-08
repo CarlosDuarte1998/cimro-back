@@ -3,8 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import InsurersView from './Admin/InsurersView.vue';
 import FileManager from '@/Components/FileManager.vue';
-
-
+import Toast from 'primevue/toast';
 </script>
 
 <template>
@@ -30,7 +29,10 @@ import FileManager from '@/Components/FileManager.vue';
                 </div>
             </div>
         </div>
+        <Toast />
     </AppLayout>
+
+  
   
 </template>
 

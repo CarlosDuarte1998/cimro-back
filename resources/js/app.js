@@ -25,7 +25,9 @@ createInertiaApp({
                     preset: Aura,
                     options: {
                         darkModeSelector: false || "none",
+                        cssLayer: false,
                     },
+                    
                 },
             })
             .use(ConfirmationService)

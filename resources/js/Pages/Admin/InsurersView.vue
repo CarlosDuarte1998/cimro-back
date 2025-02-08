@@ -1,4 +1,5 @@
 <script setup>
+import { computed, onMounted, ref } from 'vue';
 import FileManager from '@/Components/FileManager.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -8,48 +9,62 @@ import Dialog from 'primevue/dialog';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';  
 import { useInsurerStore } from '@/stores/insurers';
-import { onMounted, ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 
-
+//Services 
+const toast = useToast();
 const insurerStore = useInsurerStore();
 
 
+// State of the form
+const isRequesting = ref(false);
+
+
 const showForm = ref(false);
-
-
 
 const formData = ref({
     name: '',
     image: null,
 });
 
+
+const insurers = computed(() => insurerStore.AllInsurers);
+
 const getInsurers = async () => {
     await insurerStore.fetchAllInsurers();
-
 };
 
-const insurers = ref([]);
-
-
-onMounted(async() => {
+onMounted(async () => {
     await getInsurers();
-    insurers.value = insurerStore.AllInsurers;
+  
 });
 
 const postInsurer = async () => {
-  const cleanFormData = {
-    name: formData.value.name,
-    //Pasar el archivo seleccionado
-    image: formData.value.image[0],
-  };
-  await insurerStore.postInsurer(cleanFormData);
-  await getInsurers();
-  formData.value = {
-    name: '',
-    image: null,
-  };
-  showForm.value = false;
+    isRequesting.value = true;
+    const cleanFormData = {
+        name: formData.value.name,
+        image: formData.value.image[0],
+    };
+
+   const response = await insurerStore.postInsurer(cleanFormData);
+
+   console.log(response);
+  
+  if (response.status === 201) {
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Aseguradora agregada correctamente', life: 3000 });
+    } else {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar aseguradora. Intente mas tarde.', life: 3000 });
+    }
+
+    formData.value = {
+        name: '',
+        image: null,
+    };
+    showForm.value = false;
+    isRequesting.value = false;
 };
+
+
 
 </script>
 <template>
@@ -75,11 +90,6 @@ const postInsurer = async () => {
 
       </div>
 
-      <pre>
-        {{ formData.image }}
-      </pre>
-
-
       <template v-if="showForm">
         <Dialog v-model:visible="showForm" modal header="Agregar nueva aseguradora" :style="{ width: '25rem' }">
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Completa la información requerida</span>
@@ -92,11 +102,12 @@ const postInsurer = async () => {
             <FileManager class="w-full" v-model="formData.image" />
           </div>
           <div class="flex justify-end gap-2">
-            <SecondaryButton type="button" label="Cancel" severity="secondary" @click="showForm = false">
+            <SecondaryButton type="button" label="Cancel" severity="secondary" v-if="!isRequesting" @click="showForm = false">
               Cancelar
             </SecondaryButton>
-            <PrimaryButton type="button" label="Save" @click="postInsurer">
-              Guardar
+            <PrimaryButton type="button" label="Save"  :disabled="isRequesting" @click="postInsurer">
+              <label for="" v-if="!isRequesting">Guardar</label>
+              <i class="pi pi-spin pi-spinner" v-else></i>
             </PrimaryButton>
           </div>
         </Dialog>
