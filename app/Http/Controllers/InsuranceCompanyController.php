@@ -73,7 +73,8 @@ class InsuranceCompanyController extends Controller
     
         if ($request->hasFile('image')) {
             $imageService = new ImageValidationService();
-            // Se pasa primero el archivo, luego la ruta antigua y por último la carpeta
+           
+            // Delete the old image if it exists
             $insuranceCompany->image = $imageService->update($request->file('image'), $insuranceCompany->image, 'images');
         }
     
