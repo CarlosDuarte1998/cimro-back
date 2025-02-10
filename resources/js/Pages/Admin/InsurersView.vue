@@ -120,7 +120,7 @@ const postInsurer = async () => {
           <Column field="user.name" header="Usuario"></Column>
           <Column field="image" header="Imagen">
             <template #body="slotProps">
-              <img :src="`${slotProps.data.image}`" class="w-24 rounded" />
+              <img :src="`storage/${slotProps.data.image}`" class="w-24 rounded" />
             </template>
           </Column>
           

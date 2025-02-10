@@ -9,9 +9,13 @@ export const useInsurerStore = defineStore('insurer', {
         async fetchAllInsurers() {
          try {
             if(this.AllInsurers.length == 0) {
-                const response = await axios.get('/api/insurance-companies');
+                const response = await axios.get("/api/insurance-companies", {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    }
+                });
                 this.AllInsurers = response.data;
-                
             }
             }
             catch (error) {

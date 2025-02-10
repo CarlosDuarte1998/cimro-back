@@ -6,11 +6,13 @@ use App\Models\InsuranceCompany;
 use Illuminate\Http\Request;
 use App\Services\ImageValidationService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 
 class InsuranceCompanyController extends Controller
 {
-    //api
+
+
 
     public function index()
     {
@@ -35,10 +37,11 @@ class InsuranceCompanyController extends Controller
 
     public function store(Request $request)
     {
-
+       
         $request->validate([
             'name' => 'required|string',
-            'image' => 'required|image',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048
+            ',
         ]);
 
         $imageService = new ImageValidationService();
@@ -63,11 +66,28 @@ class InsuranceCompanyController extends Controller
 
     public function update(Request $request, InsuranceCompany $insuranceCompany)
     {
-        
+        $request->validate([
+            'name' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        if ($request->hasFile('image')) {
+            $imageService = new ImageValidationService();
+            // Se pasa primero el archivo, luego la ruta antigua y por último la carpeta
+            $insuranceCompany->image = $imageService->update($request->file('image'), $insuranceCompany->image, 'images');
+        }
+    
+        $insuranceCompany->name = $request->name;
+        $insuranceCompany->save();
+    
+        return response()->json($insuranceCompany);
     }
+    
 
     public function destroy(InsuranceCompany $insuranceCompany)
     {
+        $imageService = new ImageValidationService();
+        $imageService->delete($insuranceCompany->image);
         $insuranceCompany->delete();
         return response()->json(null, 204);
     }
