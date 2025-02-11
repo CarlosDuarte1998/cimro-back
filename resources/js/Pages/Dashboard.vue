@@ -2,8 +2,25 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import InsurersView from './Admin/InsurersView.vue';
-import FileManager from '@/Components/FileManager.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
+import { ref } from 'vue';
+
+import Breadcrumb from 'primevue/breadcrumb';
+
+const homeBreadcrumb = ref({
+    icon: 'pi pi-home',
+    route: '/dashboard'
+});
+
+
+
+const itemsBreadcrumb = ref([
+    { label: 'Aseguradora', route: '/dashboard' },
+]);
+
+
+
 </script>
 
 <template>
@@ -14,7 +31,10 @@ import Toast from 'primevue/toast';
                     Dashboard
                 </template>
                 <template v-if="route().current('insurers')">
-                    Insurers
+                    
+                    <Breadcrumb :home="homeBreadcrumb" :model="itemsBreadcrumb"> 
+
+                    </Breadcrumb>   
                 </template>
             </h2>
         </template>
@@ -30,6 +50,7 @@ import Toast from 'primevue/toast';
             </div>
         </div>
         <Toast />
+    
     </AppLayout>
 
   

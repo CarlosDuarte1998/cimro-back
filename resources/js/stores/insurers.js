@@ -41,7 +41,28 @@ export const useInsurerStore = defineStore('insurer', {
             catch (error) {
                 console.log(error);
             }
+        },
+
+        async deleteInsurer(id) {
+            try {
+                const response = await axios.delete(`/api/insurance-companies/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    }
+                });
+
+                this.AllInsurers = [];
+                this.fetchAllInsurers();
+
+                return response;
+
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
+
+      
 
 
     },

@@ -24,6 +24,8 @@ class InsuranceCompanyController extends Controller
                 'id' => $insuranceCompany->id,
                 'name' => $insuranceCompany->name,
                 'image' => $insuranceCompany->image,
+                'created_at' => $insuranceCompany->created_at,
+                'updated_at' => $insuranceCompany->updated_at,
                 'user' => [
                     'id' => $insuranceCompany->user->id,
                     'name' => $insuranceCompany->user->name,
@@ -90,6 +92,6 @@ class InsuranceCompanyController extends Controller
         $imageService = new ImageValidationService();
         $imageService->delete($insuranceCompany->image);
         $insuranceCompany->delete();
-        return response()->json(null, 204);
+        return response()->json(null, status: 204);
     }
 }

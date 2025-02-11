@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/insurance-companies', [InsuranceCompanyController::class, 'index']);
     Route::post('/insurance-companies', [InsuranceCompanyController::class, 'store']);
     Route::put('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'update']);
+    Route::get('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'show']);
     Route::delete('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'destroy']);
 });
 
