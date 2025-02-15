@@ -29,6 +29,8 @@ let showDialog = ref([
     { newItem: false },
     { editItem: false },
     { deleteItem: false },
+    { showItem: false },
+    { showDetails: [] },
 ]);
 
 const formData = ref({
@@ -170,7 +172,8 @@ const deleteItem = async (data) => {
               <div class="flex justify-center gap-1">
 
                 <Button type="button" v-tooltip.right="'Ver detalles'" icon="pi pi-eye"
-                  class="p-button-rounded p-button-info p-mr-2" />
+                  class="p-button-rounded p-button-info p-mr-2" @click="showDialog.showItem = !showDialog.showItem, showDialog.showDetails = 
+                  slotProps.data" />
                 <Button type="button" v-tooltip.left="'Actualizar datos'" icon="pi pi-pencil"
                   class="p-button-rounded p-button-success p-mr-2 btn-update" @click="editItem(slotProps.data)" />
                 <Button type="button" v-tooltip.top="'Eliminar elemento'" icon="pi pi-trash"
@@ -188,7 +191,6 @@ const deleteItem = async (data) => {
           :style="{ width: '25rem' }">
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Completa la información requerida</span>
           <form action="">
-
             <div class="flex flex-col items-start mb-4">
               <label for="username" class="font-semibold ">Nombre de la asegurada:</label>
               <TextInput placeholder="Escriba el nombre" v-model="formData.name" class="w-full" />
@@ -207,38 +209,37 @@ const deleteItem = async (data) => {
                 <i class="pi pi-spin pi-spinner" v-else></i>
               </PrimaryButton>
             </div>
-
           </form>
-
         </Dialog>
       </template>
 
-      <template v-if="showDialog.deleteItem">
-        <Dialog v-model:visible="showDialog.newItem" modal header="Agregar nueva aseguradora"
+     
+
+      <template v-if="showDialog.showItem">
+        <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nueva aseguradora"
           :style="{ width: '25rem' }">
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Completa la información requerida</span>
+
           <div class="flex flex-col items-start mb-4">
             <label for="username" class="font-semibold ">Nombre de la asegurada:</label>
-            <TextInput placeholder="Escriba el nombre" v-model="formData.name" class="w-full" />
+            <h3>
+              {{ showDialog.showDetails.name }}
+            </h3>
           </div>
+
           <div class="flex flex-col items-start mb-4">
             <label for="email" class="font-semibold ">Logo de la asegurada</label>
-            <FileManager class="w-full" v-model="formData.image" />
+            <FileManager class="w-full" v-model="showDialog.showDetails.image" :imagePreview="true" />
           </div>
+      
           <div class="flex justify-end gap-2">
             <SecondaryButton type="button" label="Cancel" severity="secondary" v-if="!isRequesting"
-              @click="showDialog.newItem = false">
-              Cancelar
+              @click="showDialog.showItem = false">
+              Cerrar
             </SecondaryButton>
-            <PrimaryButton type="button" label="Save" :disabled="isRequesting" @click="postInsurer">
-              <label for="" v-if="!isRequesting">Guardar</label>
-              <i class="pi pi-spin pi-spinner" v-else></i>
-            </PrimaryButton>
           </div>
         </Dialog>
       </template>
-
-
 
 
 

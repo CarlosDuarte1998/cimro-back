@@ -1,4 +1,5 @@
 <script setup>
+import { defineProps, defineEmits, onMounted } from 'vue';
 import vueFilePond from "vue-filepond";
 import 'filepond/dist/filepond.min.css';
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
@@ -17,6 +18,10 @@ const props = defineProps({
     type: Array, // Los archivos seleccionados serán un array
     default: () => [],
   },
+  showPreview: {
+    type: Boolean,
+    default: false,
+  },
   textFile: {
     type: String,
     default: "Arrastre y suelte el archivo aquí para cargarlo.",
@@ -26,6 +31,7 @@ const props = defineProps({
     default: "image/png, image/jpeg",
   },
 });
+
 
 // Definir emits
 const emit = defineEmits(['update:modelValue']);
@@ -39,10 +45,29 @@ const handleFileChange = (files) => {
     emit('update:modelValue', []); // Limpiar si no hay archivos
   }
 };
+
+onMounted(() => {
+  console.log(props.modelValue);
+});
+
+
+
 </script>
 
 <template>
   <file-pond
+    class-name="my-pond"
+    :label-idle="props.textFile"
+    :allow-multiple="false" 
+    class="cursor-pointer text-xs w-1/2"
+    :accepted-file-types="props.acceptedFileTypes"
+    :files="props.modelValue" 
+    @updatefiles="handleFileChange" 
+    v-if="!showPreview"
+  />
+
+  <file-pond
+    v-else
     class-name="my-pond"
     :label-idle="props.textFile"
     :allow-multiple="false" 

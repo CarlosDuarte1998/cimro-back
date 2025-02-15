@@ -60,7 +60,9 @@ export const useInsurerStore = defineStore('insurer', {
             catch (error) {
                 console.log(error);
             }
-        }
+        },
+
+    
 
       
 
