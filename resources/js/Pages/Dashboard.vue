@@ -2,6 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import InsurersView from './Admin/InsurersView.vue';
+import BlogView from './Admin/BlogsView.vue';
 import FileManager from '@/Components/FileManager.vue';
 
 
@@ -17,6 +18,9 @@ import FileManager from '@/Components/FileManager.vue';
                 <template v-if="route().current('insurers')">
                     Insurers
                 </template>
+                <template v-if="route().current('blogs')">
+                    Blogs
+                </template>
             </h2>
         </template>
 
@@ -26,6 +30,7 @@ import FileManager from '@/Components/FileManager.vue';
 
                     <Welcome v-if="route().current('dashboard')" />
                     <InsurersView v-if="route().current('insurers')" />
+                    <BlogView v-if="route().current('blogs')" />
 
                 </div>
             </div>

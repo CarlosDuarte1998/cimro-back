@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\BlogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InsuranceCompanyController;
@@ -15,6 +16,10 @@ Route::get('/user', function (Request $request) {
 Route::get('/insurance-companies', [InsuranceCompanyController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/insurance-companies', [InsuranceCompanyController::class, 'store']);
+});
+Route::get('/blogs', [BlogController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/blogs', [BlogController::class, 'store']);
 });
 
 

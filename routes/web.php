@@ -34,3 +34,15 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('insurers');
 });
+
+//BlogView
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/blogs', function () {
+        return Inertia::render('Dashboard');
+    })->name('blogs');
+});
