@@ -11,11 +11,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-//Rutas de la API para InsuranceCompany en todos los métodos de forma grupal sin auth
+//Insurance Companies CRUD with JWT
 
-Route::get('/insurance-companies', [InsuranceCompanyController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/insurance-companies', [InsuranceCompanyController::class, 'index']);
     Route::post('/insurance-companies', [InsuranceCompanyController::class, 'store']);
+    Route::put('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'update']);
+    Route::get('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'show']);
+    Route::delete('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'destroy']);
 });
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -23,14 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+
+//Auth Routes with JWT
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-
-// Route::group(['middleware' => 'auth:sanctum'], function () {
-//     Route::get('/insurance-companies', [InsuranceCompanyController::class, 'index']);   
-//     Route::post('/insurance-companies', [InsuranceCompanyController::class, 'store']);
-//     Route::get('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'show']);
-//     Route::put('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'update']);
-//     Route::delete('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'destroy']);
-// });

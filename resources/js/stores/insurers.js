@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-
 export const useInsurerStore = defineStore('insurer', {
     state: () => ({
         AllInsurers: [],
@@ -9,8 +8,15 @@ export const useInsurerStore = defineStore('insurer', {
     actions: {
         async fetchAllInsurers() {
          try {
-            const response = await axios.get('/api/insurance-companies');
-            this.AllInsurers = response.data;
+            if(this.AllInsurers.length == 0) {
+                const response = await axios.get("/api/insurance-companies", {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    }
+                });
+                this.AllInsurers = response.data;
+            }
             }
             catch (error) {
                 console.log(error);
@@ -19,18 +25,44 @@ export const useInsurerStore = defineStore('insurer', {
 
         async postInsurer(data) {
             try {
-               await axios.post('/api/insurance-companies', data, {
+              const response =  await axios.post('/api/insurance-companies', data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
                 }
             });
-               this.fetchAllInsurers();
+
+            this.AllInsurers = [];
+            this.fetchAllInsurers();
+
+            return response;
+                
+            }
+            catch (error) {
+                console.log(error);
+            }
+        },
+
+        async deleteInsurer(id) {
+            try {
+                const response = await axios.delete(`/api/insurance-companies/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    }
+                });
+
+                this.AllInsurers = [];
+                this.fetchAllInsurers();
+
+                return response;
+
             }
             catch (error) {
                 console.log(error);
             }
         }
+
+      
 
 
     },
