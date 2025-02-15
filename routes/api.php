@@ -22,7 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{Blog}', [BlogController::class, 'update']);
+    Route::get('/blogs/{Blog}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{Blog}', [BlogController::class, 'destroy']);
 });
 
 

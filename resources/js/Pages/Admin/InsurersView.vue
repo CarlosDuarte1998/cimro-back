@@ -72,7 +72,7 @@ const postInsurer = async () => {
         name: '',
         image: null,
     };
-    showDialog.newItem = false;
+    showDialog.value.newItem = false;
     isRequesting.value = false;
 };
 
@@ -156,7 +156,7 @@ const deleteItem = async (data) => {
           <Column field="created_at" header="Creado" style="width: 15%">
             <template #body="slotProps">
               <span>{{ timeManager(slotProps.data.created_at) }}</span>
-            </template>
+            </template> 
           </Column>
           <Column field="created_at" header="Creado" style="width: 15%">
             <template #body="slotProps">

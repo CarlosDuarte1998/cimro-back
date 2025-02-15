@@ -26,6 +26,8 @@ class BlogController extends Controller
                 'description' => $BlogModel->description,
                 'slug' => $BlogModel->title,
                 'category' => $BlogModel->category,
+                'created_at' => $BlogModel->created_at,
+                'updated_at' => $BlogModel->updated_at,
                 'user' => [
                     'id' => $BlogModel->user->id,
                     'name' => $BlogModel->user->name,
@@ -76,16 +78,37 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, BlogModel $blogModel)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        if ($request->hasFile('image')) {
+            $imageService = new ImageValidationService();
+           
+            // Delete the old image if it exists
+            $blogModel->image = $imageService->update($request->file('image'), $blogModel->image, 'images');
+        }
+    
+        $blogModel->title = $request->title;
+        $blogModel->description = $request->description;
+        $blogModel->category = $request->category;
+        $blogModel->slug = $request->title;
 
+        $blogModel->save();
+    
+        return response()->json($blogModel);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BlogModel $blogModel)
     {
-        //
+        $imageService = new ImageValidationService();
+        $imageService->delete( $blogModel->image);
+        $blogModel->delete();
+        return response()->json(null, status: 204);
     }
 }
