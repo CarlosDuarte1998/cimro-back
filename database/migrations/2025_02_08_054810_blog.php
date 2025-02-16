@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->string('title');
-            $table->string('description');
+            $table->text('description');
             $table->string('slug');
             $table->integer('category');//Consultar tipos categorias
             $table->foreignId('user_id')->constrained();

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\Request;
 use App\Services\ImageValidationService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BlogController extends Controller
 {
@@ -43,6 +44,7 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info($request);
         $request->validate([
             'title' => 'required|string',
             'image' => 'required|image',
@@ -107,8 +109,8 @@ class BlogController extends Controller
     public function destroy(BlogModel $blogModel)
     {
         $imageService = new ImageValidationService();
-        $imageService->delete( $blogModel->image);
+        $imageService->delete($blogModel->image);
         $blogModel->delete();
-        return response()->json(null, status: 204);
+        return response()->json(null, 204);
     }
 }

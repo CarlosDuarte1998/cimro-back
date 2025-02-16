@@ -89,6 +89,7 @@ class InsuranceCompanyController extends Controller
 
     public function destroy(InsuranceCompany $insuranceCompany)
     {
+
         $imageService = new ImageValidationService();
         $imageService->delete($insuranceCompany->image);
         $insuranceCompany->delete();

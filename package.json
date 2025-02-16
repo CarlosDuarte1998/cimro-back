@@ -23,10 +23,12 @@
     },
     "dependencies": {
         "@primevue/themes": "^4.2.5",
+        "@tinymce/tinymce-vue": "^6.1.0",
         "filepond-plugin-file-validate-type": "^1.2.9",
         "pinia": "^2.3.1",
         "primeicons": "^7.0.0",
         "primevue": "^4.2.5",
+        "quill": "^2.0.3",
         "tailwindcss-primeui": "^0.4.0",
         "vue-filepond": "^7.0.4"
     }

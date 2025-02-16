@@ -20,13 +20,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'show']);
     Route::delete('/insurance-companies/{insuranceCompany}', [InsuranceCompanyController::class, 'destroy']);
 });
-Route::get('/blogs', [BlogController::class, 'index']);
+// Route::get('/blogs', [BlogController::class, 'index']);
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('/blogs', [BlogController::class, 'store']);
-    Route::put('/blogs/{Blog}', [BlogController::class, 'update']);
-    Route::get('/blogs/{Blog}', [BlogController::class, 'show']);
-    Route::delete('/blogs/{Blog}', [BlogController::class, 'destroy']);
+    Route::put('/blogs/{blogModel}', [BlogController::class, 'update']);
+    Route::get('/blogs/{blogModel}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
 });
 
 

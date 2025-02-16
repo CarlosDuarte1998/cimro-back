@@ -14,6 +14,7 @@ import { useBlogStore } from '@/stores/blogs';
 import timeManager from '@/utils/timeManager';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
+import Editor from 'primevue/editor';
 const toast = useToast();
 const BlogStore = useBlogStore();
 const confirm = useConfirm();
@@ -31,40 +32,31 @@ let showDialog = ref([
 
 const formData = ref({
   title: '',
-    image: null,
+  image: null,
+  category: '',
+  description: '',
 });
 const blogs = computed(() => BlogStore.AllBlogs);
 
 const getBlogs = async () => {
     await BlogStore.fetchAllBlogs();
 };
+
 onMounted(async() => {
     await getBlogs();
     //blogs.value = BlogStore.AllBlogs;
 });
 
-// const postBlog = async () => {
-//   const cleanFormData = {
-//     title: formData.value.title,
-//     description: formData.value.description,
-//     image: formData.value.image[0],
-//     category: formData.value.category
-//   };
-//   await BlogStore.postBlog(cleanFormData);
-//   await getBlogs();
-//   formData.value = {
-//     title: '',
-//     image: null,
-//   };
-//   showForm.value = false;
-// };
+
 const postBlog = async () => {
     isRequesting.value = true;
     const cleanFormData = {
-        name: formData.value.name,
+        title: formData.value.title,
         image: formData.value.image[0],
+        category: formData.value.category,
+        description: formData.value.description,
     };
-
+    console.log(cleanFormData);
    const response = await BlogStore.postBlog(cleanFormData);
 
    console.log(response);
@@ -77,8 +69,10 @@ const postBlog = async () => {
     }
 
     formData.value = {
-        name: '',
+        title: '',
         image: null,
+        category: '',
+        description: '',
     };
     showDialog.value.newItem = false;
     isRequesting.value = false;
@@ -152,7 +146,7 @@ const deleteItem = async (data) => {
           <template #paginatorstart>
           </template>
           <template #paginatorend>
-            <Button type="button" icon="pi pi-download" text />
+            
           </template>
           <Column sortable field="title" header="Titulo" style="width: 25%">
             <template #body="slotProps">
@@ -161,7 +155,8 @@ const deleteItem = async (data) => {
           </Column>
           <Column field="description" header="Descripción" style="width: 25%">
             <template #body="slotProps">
-              <span class=" font-bold">{{ slotProps.data.description }}</span>
+              <div v-html="slotProps.data.description" class="truncate">
+              </div>
             </template>
           </Column>
           <Column field="image" header="Imagen" style="width: 25%">
@@ -200,14 +195,17 @@ const deleteItem = async (data) => {
       </div>
 
       <template v-if="showDialog.newItem">
-        <Dialog v-model:visible="showDialog.newItem" modal header="Agregar nuevo blog" :style="{ width: '25rem' }">
+        <pre>
+          {{ formData }}
+        </pre>
+        <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nuevo blog" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
             <label for="title" class="font-semibold ">Titulo del blog:</label>
             <TextInput placeholder="Escriba el nombre" v-model="formData.title" class="w-full" />
           </div>
           <div class="flex flex-col items-start mb-4">
             <label for="description" class="font-semibold ">Description:</label>
-            <TextInput placeholder="Escriba la descripción" v-model="formData.description" class="w-full"/>
+            <Editor v-model="formData.description" editorStyle="height: 320px" class="w-full"/>
           </div>
           <div class="flex flex-col items-start mb-4">
             <label for="image" class="font-semibold ">Imagen del blog</label>
@@ -305,6 +303,13 @@ const deleteItem = async (data) => {
     opacity: 0.8;
 }
 
+
+.truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 
 
 </style>
