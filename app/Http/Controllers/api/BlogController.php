@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\ImageValidationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -44,7 +45,6 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request);
         $request->validate([
             'title' => 'required|string',
             'image' => 'required|image',
@@ -60,7 +60,7 @@ class BlogController extends Controller
         $blog->title = $request->title;
         $blog->description = $request->description;
         $blog->category = $request->category;
-        $blog->slug = $request->title;
+        $blog->slug = Str::slug($request->title);
         $blog->user_id = Auth::id();
         $blog->save();
 
@@ -83,7 +83,8 @@ class BlogController extends Controller
     public function update(Request $request, BlogModel $blogModel)
     {
         $request->validate([
-            'name' => 'required|string',
+            'title' => 'required|string',
+            'description' => 'string|nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
@@ -97,7 +98,7 @@ class BlogController extends Controller
         $blogModel->title = $request->title;
         $blogModel->description = $request->description;
         $blogModel->category = $request->category;
-        $blogModel->slug = $request->title;
+        $blogModel->slug = Str::slug($request->title);
 
         $blogModel->save();
     

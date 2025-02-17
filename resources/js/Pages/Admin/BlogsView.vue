@@ -1,5 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
+import { useForm, configure } from 'vee-validate';
+import * as yup from 'yup';
 import FileManager from '@/Components/FileManager.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -14,6 +16,7 @@ import { useBlogStore } from '@/stores/blogs';
 import timeManager from '@/utils/timeManager';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
+import Select from 'primevue/select';
 import Editor from 'primevue/editor';
 const toast = useToast();
 const BlogStore = useBlogStore();
@@ -23,19 +26,49 @@ const confirm = useConfirm();
 const isRequesting = ref(false);
 let showDialog = ref([
     { newItem: false },
-    { editItem: false },
+    { updateItem: false },
     { deleteItem: false },
     { showItem: false },
     { showDetails: [] },
 ]);
 
+const typeCategory = [
+    { name: 'Entrada', id: 1 },
+    { name: 'Video', id: 2 },
+    { name: 'Turismo', id: 3 },
+];
 
-const formData = ref({
-  title: '',
-  image: null,
-  category: '',
-  description: '',
+//Configurations for vee-validate
+configure({
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnInput: true,
+    validateOnModelUpdate: false,
 });
+
+//Rules for form
+const { errors, defineField, handleSubmit } = useForm({
+  validationSchema: yup.object({
+    titleBlog: yup.string().required('El titulo es requerido'),
+    descriptionBlog: yup.string(),
+    categoryBlog: yup.object().required('La categoría es requerida'),
+    imageBlog: yup.mixed(),
+  }),
+});
+
+const [titleBlog, titleBlogMeta] = defineField('titleBlog');
+const [descriptionBlog, descriptionBlogMeta] = defineField('descriptionBlog');
+const [categoryBlog, categoryBlogMeta] = defineField('categoryBlog');
+const [imageBlog, imageBlogMeta] = defineField('imageBlog');
+const imageExternal = ref([
+    {idItem: ''},
+    {image: '' },
+    {showImage: true}
+]);
+
+
+
+
 const blogs = computed(() => BlogStore.AllBlogs);
 
 const getBlogs = async () => {
@@ -48,15 +81,15 @@ onMounted(async() => {
 });
 
 
-const postBlog = async () => {
-    isRequesting.value = true;
+const postBlog = handleSubmit(
+    async () => {
+      isRequesting.value = true;
     const cleanFormData = {
-        title: formData.value.title,
-        image: formData.value.image[0],
-        category: formData.value.category,
-        description: formData.value.description,
+        title: titleBlog.value,
+        image: imageBlog.value[0],
+        category: categoryBlog.value.id,
+        description: descriptionBlog.value,
     };
-    console.log(cleanFormData);
    const response = await BlogStore.postBlog(cleanFormData);
 
    console.log(response);
@@ -68,18 +101,47 @@ const postBlog = async () => {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar Blog. Intente mas tarde.', life: 3000 });
     }
 
-    formData.value = {
-        title: '',
-        image: null,
-        category: '',
-        description: '',
-    };
+    cleanForm();
+
     showDialog.value.newItem = false;
     isRequesting.value = false;
-};
-const editItem = (data) => {
-    console.log(data.id);
-};
+    });
+
+
+
+
+//Edit blog
+
+const updateBlog = handleSubmit(
+   async () => {
+    isRequesting.value = true;
+    let cleanFormData = {
+        _method: 'PUT',
+        id: imageExternal.value.idItem,
+        title: titleBlog.value,
+        category: categoryBlog.value.id,
+        description: descriptionBlog.value,
+    };
+
+    if(!imageExternal.value.showImage){
+        cleanFormData.image = imageBlog.value[0];
+    }
+
+    console.log(cleanFormData);
+
+    const response = await BlogStore.updateBlog(cleanFormData);
+
+    if (response.status === 200) {
+
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Blog actualizado correctamente', life: 3000 });
+    } else {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar Blog. Intente mas tarde.', life: 3000 });
+    }
+
+    cleanForm();
+    showDialog.value.updateItem = false;
+    isRequesting.value = false;
+});
 
 const deleteItem = async (data) => {
   confirm.require({
@@ -107,6 +169,33 @@ const deleteItem = async (data) => {
     });
 };
 
+
+
+//Set data to edit
+
+const editItem = (data) => {
+    titleBlog.value = data.title;
+    descriptionBlog.value = data.description;
+    categoryBlog.value = typeCategory.find((category) => category.id === data.category);
+    imageExternal.value.idItem = data.id;
+    if(data.image!=null){
+        imageExternal.value.image = data.image;
+        imageExternal.value.showImage = true;
+    }
+
+};
+
+const cleanForm = () => {
+    titleBlog.value = '';
+    descriptionBlog.value = '';
+    categoryBlog.value = '';
+    imageBlog.value = '';
+    imageExternal.value.showImage = true;
+    imageExternal.value.image = '';
+    imageExternal.value.idItem = '';
+};
+
+
 </script>
 <template>
   <div>
@@ -122,7 +211,7 @@ const deleteItem = async (data) => {
 
     <div class="my-10 flex flex-col gap-4">
       <div class="flex justify-end">
-        <PrimaryButton @click="showDialog.newItem = !showDialog.newItem">
+        <PrimaryButton @click="showDialog.newItem = !showDialog.newItem, cleanForm()">
           <label for="" v-if="!showDialog.newItem" class="flex justify-between gap-1">
             <li class="pi pi-plus"></li> Nuevo blog
           </label>
@@ -184,7 +273,7 @@ const deleteItem = async (data) => {
                   class="p-button-rounded p-button-info p-mr-2" @click="showDialog.showItem = !showDialog.showItem, showDialog.showDetails = 
                   slotProps.data" />
                 <Button type="button" v-tooltip.left="'Actualizar datos'" icon="pi pi-pencil"
-                  class="p-button-rounded p-button-success p-mr-2 btn-update" @click="editItem(slotProps.data)" />
+                  class="p-button-rounded p-button-success p-mr-2 btn-update" @click="editItem(slotProps.data), showDialog.updateItem = !showDialog.updateItem" />
                 <Button type="button" v-tooltip.top="'Eliminar elemento'" icon="pi pi-trash"
                   class="p-button-rounded p-button-danger btn-cancel" @click="deleteItem(slotProps.data)" />
               </div>
@@ -195,25 +284,23 @@ const deleteItem = async (data) => {
       </div>
 
       <template v-if="showDialog.newItem">
-        <pre>
-          {{ formData }}
-        </pre>
         <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nuevo blog" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
             <label for="title" class="font-semibold ">Titulo del blog:</label>
-            <TextInput placeholder="Escriba el nombre" v-model="formData.title" class="w-full" />
+            <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
           </div>
           <div class="flex flex-col items-start mb-4">
             <label for="description" class="font-semibold ">Description:</label>
-            <Editor v-model="formData.description" editorStyle="height: 320px" class="w-full"/>
+            <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
           </div>
           <div class="flex flex-col items-start mb-4">
             <label for="image" class="font-semibold ">Imagen del blog</label>
-            <FileManager class="w-full" v-model="formData.image" />
+            <FileManager class="w-full" v-model="imageBlog" v-bind="imageBlogMeta" />
           </div>
           <div class="flex flex-col items-start mb-4">
             <label for="category" class="font-semibold ">Categoria:</label>
-            <TextInput placeholder="Por el momento integer" v-model="formData.category" class="w-full" />
+            <Select v-model="categoryBlog" v-bind="categoryBlogMeta" :options="[{ name: 'Entrada', id: 1 },{name: 'Video', id: 2},{name: 'Turismo', id: 3},]" optionLabel="name" placeholder="Select a City" class="w-full md:w-56" />
+
           </div>
           <div class="flex justify-end gap-2">
             <SecondaryButton type="button" label="Cancel" severity="secondary" @click="showDialog.newItem = false">
@@ -225,6 +312,51 @@ const deleteItem = async (data) => {
           </div>
         </Dialog>
       </template>
+
+      <template v-if="showDialog.updateItem">
+        <Dialog v-model:visible="showDialog.updateItem" maximizable modal header="Actualizar registro" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+          <div class="flex flex-col items-start mb-4">
+            <label for="title" class="font-semibold ">Titulo del blog:</label>
+            <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
+            <p class="text-red-500">
+              {{ errors.titleBlog }}
+            </p>
+          </div>
+          <div class="flex flex-col items-start mb-4">
+            <label for="description" class="font-semibold ">Description:</label>
+            <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
+          </div>
+          <div class="flex flex-col items-start mb-4">
+            <label for="image" class="font-semibold ">Imagen del blog</label>
+            <div v-if="imageExternal.showImage">
+              <img :src="`storage/${imageExternal.image}`" width="200" />
+              <PrimaryButton type="button" label="Cambiar imagen" @click="imageExternal.showImage = !imageExternal.showImage">
+                Cambiar imagen
+              </PrimaryButton>
+            </div>
+            <div v-if="!imageExternal.showImage" class="w-full">
+              <FileManager class="w-full" v-model="imageBlog" v-bind="imageBlogMeta" />
+            </div>
+          </div>
+          <div class="flex flex-col items-start mb-4">
+            <label for="category" class="font-semibold ">Categoria:</label>
+            <Select v-model="categoryBlog" v-bind="categoryBlogMeta" :options="typeCategory" optionLabel="name" placeholder="Select a City" class="w-full md:w-56" />
+            <p class="text-red-500">
+              {{ errors.categoryBlog }}
+            </p>
+          </div>
+          <div class="flex justify-end gap-2">
+            <SecondaryButton type="button" label="Cancel" severity="secondary" @click="showDialog.updateItem = false">
+              Cancelar
+            </SecondaryButton>
+            <PrimaryButton type="button" label="Save" @click="updateBlog">
+              Guardar
+            </PrimaryButton>
+          </div>
+        </Dialog>
+      </template>
+
+
       <template v-if="showDialog.showItem">
         <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nuevo blog" :style="{ width: '25rem' }">
           <div class="flex flex-col items-start mb-4">
@@ -244,9 +376,9 @@ const deleteItem = async (data) => {
             <img :src="`storage/${showDialog.showDetails.image}`" width="200" />
           </div>
           <div class="flex flex-col items-start mb-4">
-            <label for="category" class="font-semibold ">Categoria:</label>
+            <label for="category" class="font-semibold ">Categoría:</label>
             <h3>
-              {{ showDialog.showDetails.category }}
+              {{typeCategory.find((category) => category.id === showDialog.showDetails.category).name}}
             </h3>
           </div>
           <div class="flex justify-end gap-2">
@@ -256,6 +388,10 @@ const deleteItem = async (data) => {
           </div>
         </Dialog>
       </template>
+
+     
+
+
     </div>
   </div>
   <ConfirmDialog group="dialog-crud">
