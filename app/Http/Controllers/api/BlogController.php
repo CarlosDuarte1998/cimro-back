@@ -16,10 +16,20 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($category)
     {
-        $blog = BlogModel::all();
-        $blog = BlogModel::with('user')->get();
+        if (empty($category)) {
+            $category = null;
+        }
+        if ($category) {
+            $blog = BlogModel::where('category', $category)
+                            ->with('user')
+                            ->get();
+        } else {
+            $blog = BlogModel::with('user')->get();
+        }
+        // $blog = BlogModel::all();
+        // $blog = BlogModel::with('user')->get();
         $blog = $blog->map(function ($BlogModel) {
             return [
                 'id' => $BlogModel->id,

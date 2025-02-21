@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import InsurersView from './Admin/InsurersView.vue';
 import BlogView from './Admin/BlogsView.vue';
+import VideoView from './Admin/VideosView.vue';
 import FileManager from '@/Components/FileManager.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
@@ -51,6 +52,7 @@ const itemsBreadcrumb = ref([
                     <Welcome v-if="route().current('dashboard')" />
                     <InsurersView v-if="route().current('insurers')" />
                     <BlogView v-if="route().current('blogs')" />
+                    <VideoView v-if="route().current('videos')" />
 
                 </div>
             </div>
