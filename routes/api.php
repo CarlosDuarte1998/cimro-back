@@ -44,6 +44,37 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/turismo/{category}', [BlogController::class, 'index']);
+    Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{blogModel}', [BlogController::class, 'update']);
+    Route::get('/blogs/{blogModel}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/instalaciones/{category}', [BlogController::class, 'index']);
+    Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{blogModel}', [BlogController::class, 'update']);
+    Route::get('/blogs/{blogModel}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/metodos_pago/{category}', [BlogController::class, 'index']);
+    Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{blogModel}', [BlogController::class, 'update']);
+    Route::get('/blogs/{blogModel}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/categorias/{category}', [BlogController::class, 'index']);
+    Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{blogModel}', [BlogController::class, 'update']);
+    Route::get('/blogs/{blogModel}', [BlogController::class, 'show']);
+    Route::delete('/blogs/{blogModel}', [BlogController::class, 'destroy']);
+});
 
 //Auth Routes with JWT
 Route::post('/login', [AuthController::class, 'login']);

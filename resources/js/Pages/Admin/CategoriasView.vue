@@ -32,11 +32,6 @@ let showDialog = ref([
     { showDetails: [] },
 ]);
 
-// const typeCategory = [
-//     { name: 'Entrada', id: 1 },
-//     { name: 'Video', id: 2 },
-//     { name: 'Turismo', id: 3 },
-// ];
 
 //Configurations for vee-validate
 configure({
@@ -73,7 +68,7 @@ const blogs = computed(() => BlogStore.AllBlogs);
 
 const getBlogs = async () => {
   const cleanFormData = {
-        category: "2",
+        category: "6",
     };
     await BlogStore.fetchAllBlogs(cleanFormData);
 };
@@ -91,8 +86,8 @@ const postBlog = handleSubmit(
         title: titleBlog.value,
         image: imageBlog.value[0],
         // category: categoryBlog.value.id,
-        category: "2",
-        description: descriptionBlog.value,
+        category: "6",
+        description: "N/A",
     };
    const response = await BlogStore.postBlog(cleanFormData);
 
@@ -100,9 +95,9 @@ const postBlog = handleSubmit(
   
   if (response.status === 201) {
 
-        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Video agregado correctamente!', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Categoria agregada correctamente!', life: 3000 });
     } else {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar video. Intente mas tarde.', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar ¡Categoria. Intente mas tarde.', life: 3000 });
     }
 
     cleanForm();
@@ -124,8 +119,8 @@ const updateBlog = handleSubmit(
         id: imageExternal.value.idItem,
         title: titleBlog.value,
         // category: categoryBlog.value.id,
-        category: "2",
-        description: descriptionBlog.value,
+        category: "6",
+        description: "N/A",
     };
 
     if(!imageExternal.value.showImage){
@@ -138,9 +133,9 @@ const updateBlog = handleSubmit(
 
     if (response.status === 200) {
 
-        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Video actualizado correctamente!', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Categoria actualizada correctamente!', life: 3000 });
     } else {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar video. Intente mas tarde.', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar Categoria. Intente mas tarde.', life: 3000 });
     }
 
     cleanForm();
@@ -151,7 +146,7 @@ const updateBlog = handleSubmit(
 const deleteItem = async (data) => {
   confirm.require({
         group: 'dialog-crud',
-        message: ' ¿Estás seguro de eliminar este video?',
+        message: ' ¿Estás seguro de eliminar esta categoria?',
         header: 'Confirmar',
         icon: 'pi pi-info-circle',
         rejectLabel: 'Cancel',
@@ -166,7 +161,7 @@ const deleteItem = async (data) => {
         },
         accept: () => {
            const response =  BlogStore.deleteBlog({id: data.id,category: data.category});
-            toast.add({ severity: 'warn', summary: 'Realizado', detail: '¡Video borrado correctamente!', life: 3000 });
+            toast.add({ severity: 'warn', summary: 'Realizado', detail: '¡Categoria borrada correctamente!', life: 3000 });
         },
         reject: () => {
             toast.add({ severity: 'error', summary: 'Cancelado', detail: 'Se cancelo la acción', life: 3000 });
@@ -206,11 +201,11 @@ const cleanForm = () => {
   <div>
     <SectionTitle>
       <template #title>
-        <p class=" text-2xl">Videos</p>
+        <p class=" text-2xl">Categorias</p>
       </template>
       <template #description1>
 
-        Listado de videos
+        Listado de Categorias
       </template>
     </SectionTitle>
 
@@ -218,7 +213,7 @@ const cleanForm = () => {
       <div class="flex justify-end">
         <PrimaryButton @click="showDialog.newItem = !showDialog.newItem, cleanForm()">
           <label for="" v-if="!showDialog.newItem" class="flex justify-between gap-1">
-            <li class="pi pi-plus"></li> Nuevo video
+            <li class="pi pi-plus"></li> Nueva categoria
           </label>
           <label for="" v-else>Ocultar formulario</label>
         </PrimaryButton>
@@ -247,12 +242,12 @@ const cleanForm = () => {
               <span class=" font-bold">{{ slotProps.data.title }}</span>
             </template>
           </Column>
-          <Column field="description" header="Descripción" style="width: 25%">
+          <!-- <Column field="description" header="Descripción" style="width: 25%">
             <template #body="slotProps">
               <div v-html="slotProps.data.description" class="truncate">
               </div>
             </template>
-          </Column>
+          </Column> -->
           <Column field="image" header="Imagen" style="width: 25%">
             <template #body="slotProps">
               <img :src="`storage/${slotProps.data.image}`" width="70" />
@@ -289,23 +284,19 @@ const cleanForm = () => {
       </div>
 
       <template v-if="showDialog.newItem">
-        <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nuevo video" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nueva categoria" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo de la categoria:</label>
             <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
           </div>
-          <div class="flex flex-col items-start mb-4">
+          <!-- <div class="flex flex-col items-start mb-4">
             <label for="description" class="font-semibold ">Description:</label>
             <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
-          </div>
+          </div> -->
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen de la categoria</label>
             <FileManager class="w-full" v-model="imageBlog" v-bind="imageBlogMeta" />
           </div>
-          <!-- <div class="flex flex-col items-start mb-4">
-            <label for="category" class="font-semibold ">Categoria:</label>
-            <Select v-model="categoryBlog" v-bind="categoryBlogMeta" :options="[{ name: 'Entrada', id: 1 },{name: 'Video', id: 2},{name: 'Turismo', id: 3},]" optionLabel="name" placeholder="Select a City" class="w-full md:w-56" />
-          </div> -->
           <div class="flex justify-end gap-2">
             <SecondaryButton type="button" label="Cancel" severity="secondary" @click="showDialog.newItem = false">
               Cancelar
@@ -318,20 +309,20 @@ const cleanForm = () => {
       </template>
 
       <template v-if="showDialog.updateItem">
-        <Dialog v-model:visible="showDialog.updateItem" maximizable modal header="Actualizar registro" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <Dialog v-model:visible="showDialog.updateItem" maximizable modal header="Actualizar categoria" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo de la categoria:</label>
             <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
             <p class="text-red-500">
               {{ errors.titleBlog }}
             </p>
           </div>
-          <div class="flex flex-col items-start mb-4">
+          <!-- <div class="flex flex-col items-start mb-4">
             <label for="description" class="font-semibold ">Description:</label>
             <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
-          </div>
+          </div> -->
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen de la categoria</label>
             <div v-if="imageExternal.showImage">
               <img :src="`storage/${imageExternal.image}`" width="200" />
               <PrimaryButton type="button" class="mt-2" label="Cambiar imagen" @click="imageExternal.showImage = !imageExternal.showImage">
@@ -362,19 +353,19 @@ const cleanForm = () => {
 
 
       <template v-if="showDialog.showItem">
-        <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nuevo video" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nueva categoria" :style="{ width: '25rem' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo de la categoria:</label>
             <h3>
               {{ showDialog.showDetails.title }}
             </h3>
           </div>
-          <div class="flex flex-col items-start mb-4">
+          <!-- <div class="flex flex-col items-start mb-4">
             <label for="description" class="font-semibold ">Description:</label>
             <div v-html="showDialog.showDetails.description"></div>
-          </div>
+          </div> -->
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen de la categoria</label>
             <img :src="`storage/${showDialog.showDetails.image}`" width="200" />
           </div>
           <!-- <div class="flex flex-col items-start mb-4">

@@ -101,7 +101,7 @@ const postBlog = handleSubmit(
   
   if (response.status === 201) {
 
-        toast.add({ severity: 'success', summary: 'Success', detail: 'Blog agregado correctamente', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Blog agregado correctamente!', life: 3000 });
     } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar Blog. Intente mas tarde.', life: 3000 });
     }
@@ -139,7 +139,7 @@ const updateBlog = handleSubmit(
 
     if (response.status === 200) {
 
-        toast.add({ severity: 'success', summary: 'Success', detail: 'Blog actualizado correctamente', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Blog actualizado correctamente!', life: 3000 });
     } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar Blog. Intente mas tarde.', life: 3000 });
     }
@@ -167,7 +167,7 @@ const deleteItem = async (data) => {
         },
         accept: () => {
            const response =  BlogStore.deleteBlog({id: data.id,category: data.category});
-            toast.add({ severity: 'info', summary: 'Realizado', detail: 'Registro borrado', life: 3000 });
+            toast.add({ severity: 'warn', summary: 'Realizado', detail: '¡Blog borrado correctamente!', life: 3000 });
         },
         reject: () => {
             toast.add({ severity: 'error', summary: 'Cancelado', detail: 'Se cancelo la acción', life: 3000 });

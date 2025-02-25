@@ -63,7 +63,7 @@ const postInsurer = async () => {
   
   if (response.status === 201) {
 
-        toast.add({ severity: 'success', summary: 'Success', detail: 'Aseguradora agregada correctamente', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: 'Aseguradora agregada correctamente', life: 3000 });
     } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar aseguradora. Intente mas tarde.', life: 3000 });
     }

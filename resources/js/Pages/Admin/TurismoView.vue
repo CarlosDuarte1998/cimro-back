@@ -32,11 +32,6 @@ let showDialog = ref([
     { showDetails: [] },
 ]);
 
-// const typeCategory = [
-//     { name: 'Entrada', id: 1 },
-//     { name: 'Video', id: 2 },
-//     { name: 'Turismo', id: 3 },
-// ];
 
 //Configurations for vee-validate
 configure({
@@ -73,7 +68,7 @@ const blogs = computed(() => BlogStore.AllBlogs);
 
 const getBlogs = async () => {
   const cleanFormData = {
-        category: "2",
+        category: "3",
     };
     await BlogStore.fetchAllBlogs(cleanFormData);
 };
@@ -91,7 +86,7 @@ const postBlog = handleSubmit(
         title: titleBlog.value,
         image: imageBlog.value[0],
         // category: categoryBlog.value.id,
-        category: "2",
+        category: "3",
         description: descriptionBlog.value,
     };
    const response = await BlogStore.postBlog(cleanFormData);
@@ -100,9 +95,9 @@ const postBlog = handleSubmit(
   
   if (response.status === 201) {
 
-        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Video agregado correctamente!', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Turismo agregado correctamente!', life: 3000 });
     } else {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar video. Intente mas tarde.', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al agregar turismo. Intente mas tarde.', life: 3000 });
     }
 
     cleanForm();
@@ -124,7 +119,7 @@ const updateBlog = handleSubmit(
         id: imageExternal.value.idItem,
         title: titleBlog.value,
         // category: categoryBlog.value.id,
-        category: "2",
+        category: "3",
         description: descriptionBlog.value,
     };
 
@@ -138,9 +133,9 @@ const updateBlog = handleSubmit(
 
     if (response.status === 200) {
 
-        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Video actualizado correctamente!', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Realizado', detail: '¡Turismo actualizado correctamente!', life: 3000 });
     } else {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar video. Intente mas tarde.', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar turismo. Intente mas tarde.', life: 3000 });
     }
 
     cleanForm();
@@ -151,7 +146,7 @@ const updateBlog = handleSubmit(
 const deleteItem = async (data) => {
   confirm.require({
         group: 'dialog-crud',
-        message: ' ¿Estás seguro de eliminar este video?',
+        message: ' ¿Estás seguro de eliminar este turismo?',
         header: 'Confirmar',
         icon: 'pi pi-info-circle',
         rejectLabel: 'Cancel',
@@ -166,7 +161,7 @@ const deleteItem = async (data) => {
         },
         accept: () => {
            const response =  BlogStore.deleteBlog({id: data.id,category: data.category});
-            toast.add({ severity: 'warn', summary: 'Realizado', detail: '¡Video borrado correctamente!', life: 3000 });
+            toast.add({ severity: 'warn', summary: 'Realizado', detail: '¡Turismo borrado correctamente!', life: 3000 });
         },
         reject: () => {
             toast.add({ severity: 'error', summary: 'Cancelado', detail: 'Se cancelo la acción', life: 3000 });
@@ -206,11 +201,11 @@ const cleanForm = () => {
   <div>
     <SectionTitle>
       <template #title>
-        <p class=" text-2xl">Videos</p>
+        <p class=" text-2xl">Turismo</p>
       </template>
       <template #description1>
 
-        Listado de videos
+        Listado de turismo
       </template>
     </SectionTitle>
 
@@ -218,7 +213,7 @@ const cleanForm = () => {
       <div class="flex justify-end">
         <PrimaryButton @click="showDialog.newItem = !showDialog.newItem, cleanForm()">
           <label for="" v-if="!showDialog.newItem" class="flex justify-between gap-1">
-            <li class="pi pi-plus"></li> Nuevo video
+            <li class="pi pi-plus"></li> Nuevo Turismo
           </label>
           <label for="" v-else>Ocultar formulario</label>
         </PrimaryButton>
@@ -289,9 +284,9 @@ const cleanForm = () => {
       </div>
 
       <template v-if="showDialog.newItem">
-        <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nuevo video" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <Dialog v-model:visible="showDialog.newItem" maximizable modal header="Agregar nuevo turismo" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo del turismo:</label>
             <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
           </div>
           <div class="flex flex-col items-start mb-4">
@@ -299,7 +294,7 @@ const cleanForm = () => {
             <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
           </div>
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen del turismo</label>
             <FileManager class="w-full" v-model="imageBlog" v-bind="imageBlogMeta" />
           </div>
           <!-- <div class="flex flex-col items-start mb-4">
@@ -320,7 +315,7 @@ const cleanForm = () => {
       <template v-if="showDialog.updateItem">
         <Dialog v-model:visible="showDialog.updateItem" maximizable modal header="Actualizar registro" :style="{ width: '40rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo del turismo:</label>
             <TextInput placeholder="Escriba el nombre" v-model="titleBlog" v-bind="titleBlogMeta" class="w-full" />
             <p class="text-red-500">
               {{ errors.titleBlog }}
@@ -331,7 +326,7 @@ const cleanForm = () => {
             <Editor v-model="descriptionBlog" v-bind="descriptionBlogMeta" editorStyle="height: 320px" class="w-full"/>
           </div>
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen del turismo</label>
             <div v-if="imageExternal.showImage">
               <img :src="`storage/${imageExternal.image}`" width="200" />
               <PrimaryButton type="button" class="mt-2" label="Cambiar imagen" @click="imageExternal.showImage = !imageExternal.showImage">
@@ -362,9 +357,9 @@ const cleanForm = () => {
 
 
       <template v-if="showDialog.showItem">
-        <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nuevo video" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="showDialog.showItem" modal header="Agregar nuevo turismo" :style="{ width: '25rem' }">
           <div class="flex flex-col items-start mb-4">
-            <label for="title" class="font-semibold ">Titulo del video:</label>
+            <label for="title" class="font-semibold ">Titulo del turismo:</label>
             <h3>
               {{ showDialog.showDetails.title }}
             </h3>
@@ -374,7 +369,7 @@ const cleanForm = () => {
             <div v-html="showDialog.showDetails.description"></div>
           </div>
           <div class="flex flex-col items-start mb-4">
-            <label for="image" class="font-semibold ">Imagen del video</label>
+            <label for="image" class="font-semibold ">Imagen del turismo</label>
             <img :src="`storage/${showDialog.showDetails.image}`" width="200" />
           </div>
           <!-- <div class="flex flex-col items-start mb-4">

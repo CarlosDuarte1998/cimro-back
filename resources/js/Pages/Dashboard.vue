@@ -4,6 +4,10 @@ import Welcome from '@/Components/Welcome.vue';
 import InsurersView from './Admin/InsurersView.vue';
 import BlogView from './Admin/BlogsView.vue';
 import VideoView from './Admin/VideosView.vue';
+import TurismoView from './Admin/TurismoView.vue';
+import InstalacionesView from './Admin/InstalacionesView.vue';
+import MetodosPagoView from './Admin/MetodosPagoView.vue';
+import CategoriasView from './Admin/CategoriasView.vue';
 import FileManager from '@/Components/FileManager.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
@@ -19,7 +23,7 @@ const homeBreadcrumb = ref({
 
 
 const itemsBreadcrumb = ref([
-    { label: 'Aseguradora', route: '/dashboard' },
+    { label: 'Aseguradora', route: '/dashboard' }
 ]);
 
 
@@ -53,6 +57,10 @@ const itemsBreadcrumb = ref([
                     <InsurersView v-if="route().current('insurers')" />
                     <BlogView v-if="route().current('blogs')" />
                     <VideoView v-if="route().current('videos')" />
+                    <TurismoView v-if="route().current('turismo')" />
+                    <InstalacionesView v-if="route().current('instalaciones')" />
+                    <MetodosPagoView v-if="route().current('metodos_pago')" />
+                    <CategoriasView v-if="route().current('categorias')" />
 
                 </div>
             </div>

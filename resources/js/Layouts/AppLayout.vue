@@ -62,6 +62,18 @@ const logout = () => {
                                 <NavLink :href="route('videos')" :active="route().current('videos')">
                                     Videos
                                 </NavLink>
+                                <NavLink :href="route('turismo')" :active="route().current('turismo')">
+                                    Turismo
+                                </NavLink>
+                                <NavLink :href="route('instalaciones')" :active="route().current('instalaciones')">
+                                    Instalaciones
+                                </NavLink>
+                                <NavLink :href="route('metodos_pago')" :active="route().current('metodos_pago')">
+                                    Metodos pago
+                                </NavLink>
+                                <NavLink :href="route('categorias')" :active="route().current('categorias')">
+                                    Categorias
+                                </NavLink>
                             </div>
                         </div>
 

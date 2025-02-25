@@ -24,7 +24,6 @@ Route::middleware([
 });
 
 //InsurersView
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -36,7 +35,6 @@ Route::middleware([
 });
 
 //BlogView
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -48,7 +46,6 @@ Route::middleware([
 });
 
 //VideoView
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -57,4 +54,48 @@ Route::middleware([
     Route::get('/videos', function () {
         return Inertia::render('Dashboard');
     })->name('videos');
+});
+
+//TurismoView
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/turismo', function () {
+        return Inertia::render('Dashboard');
+    })->name('turismo');
+});
+
+//InstalacionesView
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/instalaciones', function () {
+        return Inertia::render('Dashboard');
+    })->name('instalaciones');
+});
+
+//MetodosPagoView
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/metodos_pago', function () {
+        return Inertia::render('Dashboard');
+    })->name('metodos_pago');
+});
+
+//CategoriasView
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/categorias', function () {
+        return Inertia::render('Dashboard');
+    })->name('categorias');
 });
